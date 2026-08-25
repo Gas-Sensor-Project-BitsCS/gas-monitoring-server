@@ -36,11 +36,15 @@
         <span>Admin</span>
     </a>
 
-    <a href="#dashboard">
+    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
         <div class="icon-box">
-            <i data-lucide="log-in"></i>
+            <i data-lucide="log-out"></i>
         </div>
-        <span>Login</span>
+        <span>Logout</span>
     </a>
+    <!-- Hidden Logout Form -->
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
 
 </aside>
