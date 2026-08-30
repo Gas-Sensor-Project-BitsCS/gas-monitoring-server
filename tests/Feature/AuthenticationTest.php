@@ -16,7 +16,7 @@ class AuthenticationTest extends TestCase
             'name'                  => 'John Doe',
             'email'                 => 'john@example.com',
             'password'              => 'password123',
-            // 'password_confirmation' => 'password123',
+            'password_confirmation' => 'password123',
         ]);
 
         // Assert redirect to dashboard and user exists in DB

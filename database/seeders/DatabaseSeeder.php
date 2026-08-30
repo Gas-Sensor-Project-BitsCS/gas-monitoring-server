@@ -28,7 +28,5 @@ class DatabaseSeeder extends Seeder
         
         //SensorData::factory()->count(100)->create();
 
-        
-
     }
 }

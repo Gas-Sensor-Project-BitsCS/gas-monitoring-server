@@ -30,7 +30,7 @@ body{
     padding: 20px;
     line-height: 1.6;
 }
-input[type='text']{
+input[type='text'],input[type='password'],input[type='email']{
     height: 4em;
     width: 100%;
     padding: 0 5%;
@@ -136,4 +136,8 @@ label{
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+
+.server-error{
+    color:red;
 }
