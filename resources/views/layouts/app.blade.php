@@ -6,11 +6,12 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>@yield('title')</title>
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 </head>
 <body>
-    <div class="app">
+    <div class="app" id="app">
         <x-header/>
         <x-sidebar/>
         <main class="main">

@@ -1,45 +1,91 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
-
-*,
-*::before,
-*::after{
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
 :root{
     --bg-color: #1c1d2b;
     --base-color: #11121a;
+    
     --text-color: #e6e6ef;
     --hover-color: #222533;
     --line-color: #42434a;
     --accent-clr: #5e63ff;
     --second-text-clr: #b0b3c1;
+    --font-primary: "Inter", sans-serif;
+
+    --fs-xs: 11px;
+    --fs-sm: 12px;
+    --fs-md: 14px;
+    --fs-lg: 16px;
+    --fs-xl: 20px;
+    --fs-2xl: 24px;
+    --fs-3xl: 30px;
+
+    --fw-regular: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
 }
-html{
-    line-height: 1.6;
-    font-family: Poppins,'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "inter","Manrope", sans-serif;
+}
+:root {
+  --ff: "Manrope", sans-serif;
+  --h1: 700 1.5rem/1.2em var(--ff);
+  --h2: 700 1.25rem/1.4em var(--ff);
+  --h3: 700 1.125rem/1.4em var(--ff);
+  --p: 400 1rem/1.6em var(--ff);
+  --small: 400 0.75rem/1.6em var(--ff);
+  --transition: 0.2s ease-in-out;
+}
+:root {
+    /* bg-colors */
+  --primary: oklch(0.65 0.15 264);
+  --bg-dark: oklch(0.92 0 264);
+  --bg: oklch(0.96 0 264);
+  --bg-light: oklch(1 0 264);
+  --bg-sidebar: linear-gradient(63deg, #91b7dc, #c0bafb);
+  --bg-nav-hover: linear-gradient(44deg, #8075ff8c, #a4dcf9);
+  /* text-colors */
+  --text: oklch(0.15 0 264);
+  --text-muted: oklch(0.4 0 264);
+  /* shadows */
+  --shadow-s: inset 0 1px 2px #ffffff30, /* top highlight */ 0 1px 2px #00000030,
+    /* dark shadow */ 0 2px 4px #00000015; /* soft shadow */
+  --shadow-m: inset 0 1px 2px #ffffff50, /* top highlight */ 0 2px 4px #00000030,
+    /* dark shadow */ 0 4px 8px #00000015; /* soft shadow */
+  --shadow-l: inset 0 1px 2px #ffffff70, /* top highlight */ 0 4px 6px #00000030,
+    /* dark shadow */ 0 6px 10px #00000015; /* soft shadow */
+}
+body.light {
+  /* bg-colors */
+  --primary: oklch(0.9 0.17 100);
+  --bg-dark: oklch(0.1 0 264);
+  --bg: oklch(0.2 0 264);
+  --bg-light: oklch(0.3 0 264);
+  --bg-sidebar: linear-gradient(63deg, #2c3f74, #111521);
+  --bg-nav-hover: linear-gradient(44deg, #5145d5ba, #0a3359);
+  /* text-colors */
+  --text: oklch(0.96 0 264);
+  --text-muted: oklch(0.76 0 264);
+}
+/* Global CSS */
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text-muted);
 }
 
-body{
-    background: transparent;
-    font-size: 14px;
-    color: var(--text-color);
-    /* background-image: url(../images/background2.jpg); */
-    background-color: var(--base-color);
-    background-repeat: no-repeat;
-    background-size: cover;
-    /* overflow: hidden; */
-}
+
+
 .app{
-    /* backdrop-filter: blur(34px); */
-    background-color: transparent;
+    
     max-width: 100%;
     height:100vh;
     display: grid;
-    grid-template-columns: 250px 1fr;
+    grid-template-columns: auto 1fr;
     grid-template-rows: auto 1fr;
     grid-template-areas: 
         "sidebar navbar"
@@ -47,88 +93,79 @@ body{
         "sidebar main";
 }
 
-.navbar{
-    background-color: var(--base-color);
-    height: 100px;
+.header{
+    background-color: var(--bg-light);
+    height: 80px;
     grid-area: navbar;
-    margin:auto;
-    padding: 30px;
+    padding: 15px;
     text-align: center;
     
 }
+
+.hidden {
+    grid-template-columns: 0 1fr;
+  transition: var(--transition);
+}
+.display-none{
+    display: none;
+}
+
 .sidebar{
-    background: transparent;
+    padding:20px;
+    background: var(--bg-sidebar);
+    color:white;
     grid-area: sidebar;
-    display: grid;
-    grid-template-rows: 130px repeat(5,80px);
+    /* display: flex;
+    flex-direction: column; */
     justify-items: center;
     align-items: center;
 }
-.brand{
-    font-size: large;
-    font-weight: 400;
-    text-align: center;
+
+.sidebar-brand {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: -0.02em;
 }
 
-.sidebar a{
-    height:70px;
+.sidebar  .title{
+    margin-bottom: 2em;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+.sidebar>nav{
     width: 100%;
-    padding-left: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.sidebar>nav> a{
+    height:60px;
+    width: 100%;
     text-decoration: none;
     color: inherit;
     
     display: flex;
     align-items: center;
-    align-content: center;
     text-align: center;
     flex-wrap: nowrap;
     flex-direction: row;
-    gap: 20px;
 }
 .main{
     grid-area: main;
-    margin-top: 10px;
+    /* margin-top: 10px; */
 }
 
-.main p{
-    color: var(--second-text-clr);
-    margin-top: 5px;
-    margin-bottom: 15px;
-}
 
-.card{
-    /* box-shadow: 0 8px 16px rgba(20,20,20,0.2); */
-    background-color: var(--bg-color);
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    padding: 20px;
-    margin-left: 20px;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-}
-#aside ul{
-    list-style: none;
-    list-style-type: none;
-}
-#aside> ul >li:first-child{
-    margin-top: 20px;
-    min-height: 80px;
-    align-items: center;
-    font-weight: 400;
-}
-.sidebar a:hover{
-    .icon-box{
-        background-color: var(--bg-color);
-        color: #e1ebff;
-    }
-    background-color: var(--bg-color);
+.sidebar>nav> a:hover{
+    background: var(--bg-nav-hover);
     color:red;
-    transform: scale(1.1);
+    border-radius: 8px;
+    /* transform: scale(1.1); */
     transition: cubic-bezier(0.075, 0.82, 0.165, 1);
 }
-
-
 
 a{
     text-decoration: none;
@@ -143,14 +180,16 @@ a:active{
 
 .dashboard{
     min-height: 100vh;
+    padding: 20px;
+    color: var(--text);
     display: grid;
     gap: 1em;
-    grid-template-columns: 3fr 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
     grid-auto-flow: column;
     grid-template-areas: 
-        "data message"
-        "chart message"
+        "data "
+        "info"
     ;
 }
 
@@ -162,38 +201,62 @@ a:active{
     width: 100%;
     flex-wrap: wrap;
 }
-.sensor-data .item{
-    
+.dashboard .card{
     display: flex;
-    flex: auto;
-    p{
-        font-size: 22px;
-        font-weight:300;
-    }
-    span{
-        font-size: 30px;
-        font-weight: 400;
-    }
+    flex-direction: row;
+    flex: 1 1 0;
+    justify-content: space-between;
 }
-.message{
-    grid-area: message;
-    background-color: #222533;
-    min-width: 250px;
+
+.card{
+    background-color: var(--bg-light);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 1em;
+    padding: 20px;
+    line-height: 1.5rem;
+}
+.card-title {
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-medium);
+    line-height: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.card-title-right{
+    font-size: var(--fs-md);
+}
+.card-data{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: baseline;
+}
+.sensor-data > .card > .info{
+    text-align: left;
     display: flex;
     flex-direction: column;
+    white-space: nowrap;   /* prevents line breaks */
+    overflow: hidden;      /* hides overflow if container is too small */
+    text-overflow: ellipsis; /* adds "..." if text is cut off */
+} 
+.info-last-div{
+    margin-top: auto;
 }
-.live-data-graph{
-    grid-area: chart;
+
+.info-data{
+    grid-area: info;
     display: flex;
-    /* margin-top: 50px; */
+    flex-direction: row;
+    gap: 1em;
+    width: 100%;
+    flex-wrap: wrap;
 }
 .icon-box {
-    background-color: var(--base-color);
-    color: #3877f5;
+    margin: 0 20px;
+    background: transparent;
+    color: white;
     fill:#276fec;
-    width: 40px;
-    height: 40px;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -201,16 +264,72 @@ a:active{
     border-radius: 8px;
 }
 .icon-box:hover{
-    background-color: #276fec;
+    background: transparent;
     color: #e1ebff;
     transform: scale(1.2);
     transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .icon-box svg {
+    stroke-width: 1.5px;
     width: 30px;
     height: 30px;
 }
-
+.gas-icon{
+    background-color: rgb(255 237 212);
+    color:rgb(250, 161, 27);
+}
+.temp-icon{
+    background-color: rgb(185, 235, 185);
+    color: green;
+}
+.danger-level{
+    background-color: rgb(252, 168, 168);
+    color: rgb(255, 45, 45);
+}
+.card-icon{
+    height: 70px;
+    width: 70px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg {
+    stroke-width: 2px;
+    width: 50px;
+    height: 50px;
+    }
+}
+.status-text{
+    text-transform: capitalize;
+}
+.normal, .online{
+    .card-icon{
+        background-color: rgb(185, 235, 185);
+        color: green;
+    }
+    .status-text{
+        color: green;
+    }
+}
+.moderate{
+    .card-icon{
+        background-color: rgb(255 237 212);
+        color:rgb(250, 161, 27);
+    }
+    .status-text{
+        color: rgb(246, 160, 73);
+    }
+}
+.high, .offline{
+    .card-icon{
+        background-color: rgb(255 212 212);
+        color: rgb(255 0 0);
+    }
+    .status-text{
+        color: rgb(255, 45, 45);
+    }
+}
 
 .flex-center{
     display: flex;
@@ -218,7 +337,38 @@ a:active{
     justify-content: center;
 }
 
+.shadow-s {
+  box-shadow: var(--shadow-s);
+}
+.shadow-m {
+  box-shadow: var(--shadow-m);
+}
+.shadow-l {
+  box-shadow: var(--shadow-l);
+}
 
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 1rem;
+  background: var(--bg-light);
+  color: var(--text-muted);
+  padding: 0.24rem 0.5rem 0.12rem 0.5rem;
+  margin-left: auto;
+  transition: var(--transition);
+}
+button:hover {
+  background: var(--bg);
+  transition: var(--transition);
+}
+button:focus {
+  outline: none;
+}
+
+.text-s{
+    font-size: var(--small);
+    color: var(--text-muted);
+}
 
  @media (max-width: 768px){
     .app{
@@ -239,7 +389,7 @@ a:active{
     grid-row: repeat(auto);
     grid-template-areas: 
         "data"
-        "message"
+        "info"
         "chart";
     }
     .message{
@@ -247,10 +397,7 @@ a:active{
     }
     .card{
         font-size: 0.6rem;
-        margin-top: 1em;
         margin-left: 0;
     }
-    .live-data-graph{
-        min-height: 400px;
-    }
+    
  }
