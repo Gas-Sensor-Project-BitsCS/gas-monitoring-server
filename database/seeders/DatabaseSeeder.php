@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use APP\Models\Device;
 use App\Models\SensorData;
+use Database\Factories\DeviceFactory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -26,6 +28,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
         
+        $this->call(([DeviceSeeder::class]));
         //SensorData::factory()->count(100)->create();
 
     }

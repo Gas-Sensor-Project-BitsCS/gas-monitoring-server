@@ -203,7 +203,7 @@ a:active{
 }
 .dashboard .card{
     display: flex;
-    flex-direction: row;
+    /* flex-direction: row; */
     flex: 1 1 0;
     justify-content: space-between;
 }
@@ -251,6 +251,42 @@ a:active{
     gap: 1em;
     width: 100%;
     flex-wrap: wrap;
+}
+.info-data>.card{
+    flex-direction: column;
+}
+
+.alert-active{
+    background-color: rgb(255 224 224);
+    border: 1px solid #fdc2c2;
+    .icon{
+        color: red;
+        svg{
+            height: 30px;
+            width: 30px;
+        }
+    }
+    .status{
+        color: red;
+        padding: 0 20px;
+        border-radius: 20px;
+        background-color: #ffbfbf;
+    }
+}
+.alert-resolved{
+    .icon{
+        color: rgb(64, 124, 38);
+        svg{
+            height: 30px;
+            width: 30px;
+        }
+    }
+    .status{
+        color: green;
+        padding: 0 20px;
+        border-radius: 20px;
+        background-color: rgb(217 253 201);
+    }
 }
 .icon-box {
     margin: 0 20px;

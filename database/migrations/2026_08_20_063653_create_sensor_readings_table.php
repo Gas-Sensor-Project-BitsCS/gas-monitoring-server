@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('sensor_readings', function (Blueprint $table) {
             $table->id(); // bigint, primary key
-            $table->float('gas_value');
-            $table->float('temperature')->nullable();
-            $table->float('humidity')->nullable();
+            $table->decimal('gas_value',6,2);
+            $table->decimal('temperature',6,2)->nullable();
+            $table->decimal('humidity',6,2)->nullable();
             $table->timestamp('recorded_at')->useCurrent();
         });
     }

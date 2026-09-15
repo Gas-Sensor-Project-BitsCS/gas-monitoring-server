@@ -82,6 +82,7 @@ Accept: application/json
 Request Body Example:
 JSON
 {
+    "device_uid": "ESP32-001",
     "gas_value": 450.25,
     "temperature": 27.5,
     "humidity": 65.0
@@ -101,7 +102,7 @@ JSON
     }
 }
 🛠️ Built With
-Backend Framework: Laravel 11
+Backend Framework: Laravel 13
 
 Real-time Server: Laravel Reverb
 

@@ -94,7 +94,7 @@
                         <p>Active Alerts</p>
                     </div>
                     <div class="card-data">
-                        <h1 class="status-text" id="humidity">0</h1>
+                        <h1 class="status-text" id="active-alerts">0</h1>
                     </div>
                     <div class="info-last-div">
                         <p>Unresolved Alerts</p>
@@ -114,25 +114,29 @@
                     <p>Recent Alerts</p>
                     <p class="card-title-right link">View All</p>
                 </div>
+                <div id="alert-container">
+
+                </div>
             </div>
-            <div class="device-info card shadow-s">
+            {{-- <div class="device-info card shadow-s">
                 <div class="card-title">
                     <p>Device Information</p>
                     <p class="card-title-right status-online">Online</p>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 @endsection
 
 @push('scripts')
     <script>
-        
+
         const levelMap = {
             0: "normal",
             1: "moderate",
             2: "high"
         };
+        let Alerts= [];
         const gasCard = document.getElementById('gas-card');
         const gasLevel = document.getElementById('gas-level')
         const tempCard = document.getElementById('temp-card');
@@ -141,25 +145,28 @@
         const humidityLevel = document.getElementById('humidity-level')
         const deviceCard = document.getElementById('deviceCard');
 
-        function setLevel(div,levelText,sensor_val,high,moderate){
+        function setLevel(div, levelText, sensor_val, high, moderate, alertType) {
             var i = 0;
             div.classList.remove('normal', 'moderate', 'high');
 
-            if(sensor_val >= high) i = 2;
-            else if(sensor_val >= moderate) i = 1;
-            else i =0;
+            if (sensor_val >= high) {
+                i = 2;
+                // alerts.set(alertType, 'high');
+            }
+            else if (sensor_val >= moderate) i = 1;
+            else i = 0;
 
             levelText.textContent = levelMap[i];
             div.classList.add(levelMap[i]);
         }
-        function isOnline(timeStamp, threshold){
-            const diff = (Date.now() - new Date(timeStamp).getTime())/1000;
+        function isOnline(timeStamp, threshold) {
+            const diff = (Date.now() - new Date(timeStamp).getTime()) / 1000;
             const statusText = document.getElementById('device-status');
-            if(diff > threshold){
+            if (diff > threshold) {
                 deviceCard.classList.remove('online', 'offline');
                 statusText.textContent = 'Offline';
                 deviceCard.classList.add('offline');
-                
+
             }
             else {
                 deviceCard.classList.remove('online', 'offline');
@@ -180,18 +187,59 @@
                     document.getElementById('humidity').textContent = Number(data.humidity).toFixed(1);
 
 
-                    setLevel(gasCard,gasLevel,data.gas_value, 500, 300);
-                    setLevel(tempCard, tempLevel, data.temperature, 41, 31);
-                    setLevel(humidityCard, humidityLevel, data.humidity, 85, 70);
+                    setLevel(gasCard, gasLevel, data.gas_value, 500, 300, 'gas');
+                    setLevel(tempCard, tempLevel, data.temperature, 41, 31, 'temperature');
+                    setLevel(humidityCard, humidityLevel, data.humidity, 85, 70, 'humidity');
                     isOnline(data.recorded_at, 15);
                 });
         }
+        function fetchRecentAlerts() {
+            fetch('/api/alerts')
+                .then(response => response.json())
+                .then(data => {
+                    // Check if valid data returned (prevents null crashes when DB is empty)
+                    if (!data || data.alerts === undefined) return;
+                    console.log(data.alerts.data);
+                    Alerts = data.alerts.data;
+                    var activeAlert = 0;
+                    Alerts.forEach(alert => {if(alert.status == 'active') activeAlert++;})
+                    document.getElementById('active-alerts').textContent = `${activeAlert}`;
+                    displayAlerts();
 
-        // Fetch every 5 seconds 
+                });
+        }
+        function displayAlerts() {
+            const container = document.getElementById('alert-container');
+
+            container.innerHTML = '';
+
+            Alerts.forEach(alert => {
+                const alertElement = document.createElement('div');
+
+                alertElement.innerHTML = `
+                <div class="alert ${alert.status == 'active'?  'alert-active':'alert-resolved'}" style="display:flex; flex-direction:row; align-items:center;justify-content: space-between; border-radius:5px">
+                    <div class="icon high">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="triangle-alert" aria-hidden="true" class="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                    </div>
+                    <strong>${alert.severity.toUpperCase()}</strong>
+                    <span>Gas Level exceeded threshold</span>
+                    <span class="status">${alert.status}</span>
+                    <span>${new Date(alert.triggered_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',hour12: true,
+  timeZone: 'Asia/Kolkata' })}</span>
+                </div>
+            `;
+
+                container.appendChild(alertElement);
+            });
+        }
+
+        // Fetch every 2 seconds 
         setInterval(fetchLatestData, 2000);
-
+        setInterval(fetchRecentAlerts, 3000);
         // Initial load
         fetchLatestData();
+        fetchRecentAlerts();
+        
     </script>
     <script type="text/javascript">
         // Initialize Lucide icons if used on page

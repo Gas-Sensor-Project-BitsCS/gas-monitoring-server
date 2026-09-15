@@ -14,20 +14,21 @@ return new class extends Migration
         Schema::create('alerts', function (Blueprint $table) {
             $table->id();
 
-            // $table->foreignId('device_id')
-            //     ->constrained()
-            //     ->cascadeOnDelete();
-
-            $table->foreignId('sensor_reading_id')
+            $table->foreignId('device_id')
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->decimal('gas_value', 10, 2);
-            $table->decimal('threshold_value', 10, 2);
+            // $table->foreignId('sensor_reading_id')
+            //     ->constrained()
+            //     ->cascadeOnDelete();
 
+            // $table->decimal('trigger_value', 10, 2);
+            // $table->decimal('threshold_value', 10, 2);
+            // $table->enum('alert_type', ['gas', 'temperature', 'humidity']);
             $table->enum('severity', [
-                'warning',
-                'critical'
+                'critical',
+                'high', 
+                'moderate',
             ]);
 
             $table->enum('status', [
@@ -38,7 +39,7 @@ return new class extends Migration
             $table->timestamp('triggered_at');
             $table->timestamp('resolved_at')->nullable();
 
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 
@@ -47,6 +48,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('alerts');
     }
 };

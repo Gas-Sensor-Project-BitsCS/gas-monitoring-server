@@ -20,7 +20,7 @@ class SensorDataFactory extends Factory
     public function definition(): array
     {
         return [
-            // 'sensor_id'   => 'GAS-' . $this->faker->numberBetween(100, 999),
+            'sensor_id'   => $this->faker->numberBetween(100, 999),
             'gas_value'   => $this->faker->randomFloat(2, 10, 50), // PPM range
             'temperature' => $this->faker->randomFloat(2, 15, 45),  // Celsius
             'humidity'    => $this->faker->randomFloat(2, 30, 90),  // Percentage
