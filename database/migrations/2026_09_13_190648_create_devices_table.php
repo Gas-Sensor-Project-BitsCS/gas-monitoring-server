@@ -18,6 +18,9 @@ return new class extends Migration
             $table->decimal('gas_threshold', 6, 2); // gas Threshold value
             $table->decimal('temperature_threshold', 6, 2); // temp Threshold value
             $table->decimal('humidity_threshold', 6, 2); // humidity Threshold value
+            $table->decimal('gas_mod_threshold', 6, 2); // gas Threshold value
+            $table->decimal('temperature_mod_threshold', 6, 2); // temp Threshold value
+            $table->decimal('humidity_mod_threshold', 6, 2); // humidity Threshold value
             $table->timestamp('last_seen_at')->nullable(); // Last activity timestamp
 
             // Indexes

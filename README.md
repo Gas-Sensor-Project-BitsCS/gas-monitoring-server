@@ -58,14 +58,15 @@ Ensure configure MySQL in .env, then run migrations:
 
 Bash
 php artisan migrate:fresh
+php atisan db:seed
 Run the Development Services:
 Open 3 terminal windows/tabs to run the stack:
 
 Laravel App Server: php artisan serve
 
-Reverb WebSocket Server: php artisan reverb:start
+<!-- Reverb WebSocket Server: php artisan reverb:start -->
 
-Vite Frontend Compiler: npm run dev
+<!-- Vite Frontend Compiler: npm run dev -->
 
 📡 API Endpoint Reference
 Store Sensor Reading
@@ -100,6 +101,17 @@ JSON
         "humidity": 65,
         "recorded_at": "2026-08-21T13:00:00.000000Z"
     }
+}
+
+set threshold api: PUT /api/devices/{device_id}/thresholds
+json
+{
+    "gas_threshold": 500,
+    "temperature_threshold": 45,
+    "humidity_threshold": 85,
+    "gas_mod_threshold": 300,
+    "temperature_mod_threshold": 35,
+    "humidity_mod_threshold": 65,
 }
 🛠️ Built With
 Backend Framework: Laravel 13

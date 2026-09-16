@@ -18,6 +18,9 @@ class DeviceSeeder extends Seeder
             'gas_threshold' => 500,
             'temperature_threshold' => 40,
             'humidity_threshold' => 85,
+            "gas_mod_threshold"=> 300,
+            "temperature_mod_threshold"=> 35,
+            "humidity_mod_threshold"=> 65,
             'last_seen_at' => now(),
         ]);
 
@@ -27,6 +30,9 @@ class DeviceSeeder extends Seeder
             'gas_threshold' => 500,
             'temperature_threshold' => 40,
             'humidity_threshold' => 85,
+            "gas_mod_threshold"=> 300,
+            "temperature_mod_threshold"=> 35,
+            "humidity_mod_threshold"=> 65,
             'last_seen_at' => now(),
         ]);
     }

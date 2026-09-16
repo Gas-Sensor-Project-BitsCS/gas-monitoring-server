@@ -27,6 +27,9 @@ class DeviceFactory extends Factory
             'gas_threshold' => fake()->numberBetween(250, 400),
             'temperature_threshold' => 50,
             'humidity_threshold' => 85,
+            'gas_mod_threshold' => fake()->numberBetween(250, 400),
+            'temperature_mod_threshold' => 50,
+            'humidity_mod_threshold' => 85,
             'last_seen_at' => now(),
         ];
     }

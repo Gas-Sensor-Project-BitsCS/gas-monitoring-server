@@ -17,7 +17,7 @@
 
                     <div>
                         <p class="status-text" id="gas-level">Normal</p>
-                        <p class="text-s">Threshold: <span id="threshold">500ppm</span></p>
+                        <p class="text-s">Threshold: <span id="gas-threshold">500ppm</span></p>
                     </div>
                 </div>
                 <div class="card-icon">
@@ -35,7 +35,7 @@
                         <p>°C</p>
                     </div>
                     <p class="status-text" id="temp-level">Normal</p>
-                    <p class="text-s">Threshold: <span id="threshold">40°C</span></p>
+                    <p class="text-s">Threshold: <span id="temp-threshold">40°C</span></p>
                 </div>
                 <div class="card-icon">
                     <svg viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
@@ -62,7 +62,7 @@
                         <p>%</p>
                     </div>
                     <p class="status-text" id="humidity-level">Normal</p>
-                    <p class="text-s">Threshold: <span id="threshold">85%</span></p>
+                    <p class="text-s">Threshold: <span id="humidity-threshold">85%</span></p>
                 </div>
                 <div class="card-icon">
                     <i data-lucide="droplets"></i>
@@ -130,6 +130,13 @@
 
 @push('scripts')
     <script>
+        // do not change it will update automatically from server
+        let gasHigh = 500
+        let tempHigh = 40
+        let humidityHigh = 85
+        let gas_moderate = 300
+        let temp_moderate = 31
+        let humidity_moderate = 71
 
         const levelMap = {
             0: "normal",
@@ -174,6 +181,22 @@
                 deviceCard.classList.add('online');
             }
         }
+
+        function fetchDevice(){
+            fetch('/api/devices/1')
+                .then(response => response.json())
+                .then(data => {
+                    gasHigh = data.device.gas_threshold;
+                    gas_moderate = data.device.gas_mod_threshold;
+                    tempHigh = data.device.temperature_threshold;
+                    temp_moderate =data.device.temperature_mod_threshold
+                    humidityHigh = data.device.humidity_threshold;
+                    humidity_moderate = data.device.humidity_mod_threshold;
+                    document.getElementById('gas-threshold').textContent = gasHigh;
+                    document.getElementById('temp-threshold').textContent = tempHigh;
+                    document.getElementById('humidity-threshold').textContent = humidityHigh;
+                });
+        }
         function fetchLatestData() {
             fetch('/api/sensor-readings/latest')
                 .then(response => response.json())
@@ -187,9 +210,9 @@
                     document.getElementById('humidity').textContent = Number(data.humidity).toFixed(1);
 
 
-                    setLevel(gasCard, gasLevel, data.gas_value, 500, 300, 'gas');
-                    setLevel(tempCard, tempLevel, data.temperature, 41, 31, 'temperature');
-                    setLevel(humidityCard, humidityLevel, data.humidity, 85, 70, 'humidity');
+                    setLevel(gasCard, gasLevel, data.gas_value, gasHigh, gas_moderate, 'gas');
+                    setLevel(tempCard, tempLevel, data.temperature, tempHigh, temp_moderate, 'temperature');
+                    setLevel(humidityCard, humidityLevel, data.humidity, humidityHigh, humidity_moderate, 'humidity');
                     isOnline(data.recorded_at, 15);
                 });
         }
@@ -224,7 +247,7 @@
                     <strong>${alert.severity.toUpperCase()}</strong>
                     <span>Gas Level exceeded threshold</span>
                     <span class="status">${alert.status}</span>
-                    <span>${new Date(alert.triggered_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',hour12: true,
+                    <span>${new Date(alert.status == 'active'?  alert.triggered_at: alert.resolved_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',hour12: true,
   timeZone: 'Asia/Kolkata' })}</span>
                 </div>
             `;
@@ -234,9 +257,11 @@
         }
 
         // Fetch every 2 seconds 
+        setInterval(fetchDevice, 5000);
         setInterval(fetchLatestData, 2000);
         setInterval(fetchRecentAlerts, 3000);
         // Initial load
+        fetchDevice();
         fetchLatestData();
         fetchRecentAlerts();
         

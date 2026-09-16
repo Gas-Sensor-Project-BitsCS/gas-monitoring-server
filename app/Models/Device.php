@@ -21,4 +21,13 @@ class Device extends Model
         'humidity_threshold',
         'last_seen_at'
         ];
+
+    protected function casts(): array
+    {
+        return [
+            'gas_threshold' => 'float',
+            'temperature_threshold' => 'float',
+            'humidity_threshold' => 'float',
+        ];
+    }
 }
