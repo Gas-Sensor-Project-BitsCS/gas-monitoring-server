@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\SensorData;
+use App\Models\Device;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,12 +21,12 @@ class SensorDataFactory extends Factory
     public function definition(): array
     {
         return [
-            'sensor_id'   => $this->faker->numberBetween(100, 999),
+            'device_id'   => Device::inRandomOrder()->first()->id, 
             'gas_value'   => $this->faker->randomFloat(2, 10, 50), // PPM range
             'temperature' => $this->faker->randomFloat(2, 15, 45),  // Celsius
             'humidity'    => $this->faker->randomFloat(2, 30, 90),  // Percentage
             // 'status'      => $this->faker->randomElement(['normal', 'warning', 'critical']),
-            // 'recorded_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
+            'recorded_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
         ];
     }
 }

@@ -57,27 +57,37 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        // 1. Validate incoming input
         $credentials = $request->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
 
-        // 2. Normalize email to lowercase (matches registration normalization)
         $credentials['email'] = strtolower($credentials['email']);
 
-        // 3. Attempt authentication (Finds user by email + verifies hashed password)
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            // Prevent session fixation attacks
-            $request->session()->regenerate();
+        // Find user first
+        $user = User::where('email', $credentials['email'])->first();
 
-            return redirect()->intended('/dashboard');
+        // User doesn't exist or password is incorrect
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ])->onlyInput('email');
         }
 
-        // 4. Return failure response if lookup or password check fails
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+        // User exists and password is correct, but account is inactive
+        if (!$user->is_active) {
+            return back()->withErrors([
+                'email' => 'Your account has been deactivated. Please contact an administrator.',
+            ])->onlyInput('email');
+        }
+
+        // Login
+        Auth::login($user, $request->boolean('remember'));
+
+        // Prevent session fixation
+        $request->session()->regenerate();
+
+        return redirect()->intended('/dashboard');
     }
 
     // Handle Logout

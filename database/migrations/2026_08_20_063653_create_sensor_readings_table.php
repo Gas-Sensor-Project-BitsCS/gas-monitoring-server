@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('sensor_readings', function (Blueprint $table) {
             $table->id(); // bigint, primary key
-            $table->decimal('gas_value',6,2);
+            $table->foreignId('device_id')
+                ->constrained('devices')
+                ->restrictOnDelete();
+            $table->decimal('gas_value',8,2);
             $table->decimal('temperature',6,2)->nullable();
             $table->decimal('humidity',6,2)->nullable();
             $table->timestamp('recorded_at')->useCurrent();
+            $table->index(['device_id', 'recorded_at']);
         });
     }
 

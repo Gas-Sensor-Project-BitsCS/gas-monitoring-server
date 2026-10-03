@@ -13,11 +13,15 @@ class SensorData extends Model
     const UPDATED_AT = null;
     protected $table = 'sensor_readings';
     protected $fillable = [
+        'device_id',
         'gas_value',
         'temperature',
         'humidity',
         'recorded_at',
     ];
     
-    
+    public function device()
+    {
+        return $this->belongsTo(Device::class);
+    }
 }

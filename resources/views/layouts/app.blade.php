@@ -5,19 +5,22 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>@yield('title')</title>
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    @livewireStyles
 </head>
 <body>
     <div class="app" id="app">
         <x-header/>
         <x-sidebar/>
         <main class="main">
+            {{-- {{ $slot }} --}}
         @yield('content')
         </main>
     </div>
     @stack('scripts')
+    @livewireScripts
 </body>
 </html>

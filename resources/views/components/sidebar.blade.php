@@ -11,7 +11,9 @@
     </div>
 
     <nav>
-        <a href="#dashboard">
+        <a href="{{ route('dashboard') }}"
+            wire:navigate
+            wire:current="active">
             <div class="icon-box">
                 <i data-lucide="house"></i>
             </div>
@@ -20,9 +22,9 @@
 
         <a href="#dashboard">
             <div class="icon-box">
-                <i data-lucide="rotate-ccw-clock"></i>
+                <i data-lucide="cpu"></i>
             </div>
-            <span>History</span>
+            <span>Devices</span>
         </a>
 
         <a href="#dashboard">
@@ -32,12 +34,21 @@
             <span>Alerts</span>
         </a>
 
-        <a href="#dashboard">
+        <a href="{{ route('thresholds') }}" wire:navigate wire:current="active">
             <div class="icon-box">
-                <i data-lucide="shield-user"></i>
+                <i data-lucide="sliders-horizontal"></i>
             </div>
-            <span>Admin</span>
+            <span>Threshold</span>
         </a>
+        @if (auth()->user()?->role === 'admin')
+            <a href="{{ route('users') }}" wire:navigate wire:current="active">
+            <div class="icon-box">
+                <i data-lucide="user"></i>
+            </div>
+            <span>Users</span>
+        </a>
+        @endif
+        
 
         <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             <div class="icon-box">

@@ -16,17 +16,16 @@ Route::middleware('guest')->group(function () {
 });
 
 // Auth Routes (Only logged in users)
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'active'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
-});
-
-Route::get('/', function () {
-    return 'Hello From Server';
+    Route::view('/thresholds', 'pages.thresholds')->name('thresholds');
+    
 });
 
 
 // Only Admin Access
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'active', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class,'index'])->name('admin.dashboard');
+    Route::view('/users','pages.users')->name('users');
 });
