@@ -137,7 +137,7 @@ new class extends Component
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
 
-                <div class=" bg-white p-5 shadow-sm">
+                <div class="  p-5 shadow-sm">
                     <h2 class="mb-2 text-lg font-semibold">
                         Gas
                     </h2>
@@ -171,7 +171,7 @@ new class extends Component
                     @enderror
                 </div>
 
-                <div class="bg-white p-5 shadow-sm">
+                <div class=" p-5 shadow-sm">
                     <h2 class="mb-2 text-lg font-semibold">
                         Temperature
                     </h2>
@@ -203,7 +203,7 @@ new class extends Component
                     @enderror
                 </div>
 
-                <div class=" bg-white p-5 shadow-sm">
+                <div class=" p-5 shadow-sm">
                     <h2 class="mb-2 text-lg font-semibold">
                         Humidity
                     </h2>

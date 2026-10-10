@@ -20,6 +20,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
     Route::view('/thresholds', 'pages.thresholds')->name('thresholds');
+    Route::view('/devices', 'pages.devices')->name('devices');
     
 });
 

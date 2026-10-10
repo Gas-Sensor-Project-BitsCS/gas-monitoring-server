@@ -25,7 +25,7 @@ class DeviceSeeder extends Seeder
         ]);
 
         Device::create([
-            'uid' => 'ESP32-002',
+            // 'uid' => 'ESP32-002',
             'location' => 'Lab Gas Monitor',
             'gas_threshold' => 500,
             'temperature_threshold' => 40,
@@ -33,7 +33,7 @@ class DeviceSeeder extends Seeder
             "gas_mod_threshold"=> 300,
             "temperature_mod_threshold"=> 35,
             "humidity_mod_threshold"=> 65,
-            'last_seen_at' => now(),
+            // 'last_seen_at' => now(),
         ]);
     }
 }

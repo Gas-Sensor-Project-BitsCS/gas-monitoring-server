@@ -12,3 +12,8 @@ document.addEventListener('livewire:init', () => {
 document.addEventListener('livewire:navigated', () => {
     lucide.createIcons();
 });
+
+
+document.addEventListener("livewire:update", () => {
+    lucide.createIcons();
+});

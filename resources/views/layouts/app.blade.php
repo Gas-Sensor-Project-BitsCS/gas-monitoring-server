@@ -7,7 +7,7 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>@yield('title')</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css','resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     @livewireStyles
 </head>

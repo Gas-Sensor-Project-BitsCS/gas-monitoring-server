@@ -1,123 +1,461 @@
-Markdown
 # 🚨 IoT Gas Monitoring & Alert System
 
-A real-time gas level monitoring dashboard and API system built with Laravel. This platform ingests sensor readings (Gas Level, Temperature, Humidity) from ESP32 microcontrollers, stores data using MySQL, and broadcasts live metric updates to a dynamic dashboard via WebSockets.
+A web-based IoT gas monitoring and alert system built with **Laravel 13**. The system receives sensor data from **ESP32** devices through REST APIs, stores readings in **MySQL**, processes threshold-based alerts, and provides a dashboard for monitoring gas levels, temperature, humidity, devices, and alerts.
+
+The application also includes custom user authentication, role-based access control, user management, and configurable device thresholds.
 
 ---
 
-## 🌟 Key Features
+## 🌟 Features
 
-* **IoT Ingestion API:** REST API endpoints designed for ESP32 nodes to send live sensor readings.
-* **Real-time WebSockets:** Live dashboard updates using **Laravel Reverb** without page refreshes.
-* **Database Architecture:** Tracks Users, Devices, Sensor Readings, and Automated Threshold Alerts.
-* **Cross-Platform Tunneling:** Configured for local development and remote testing via `ngrok`.
+### 📡 IoT Sensor Integration
+
+* ESP32 devices send sensor readings to the Laravel backend using REST APIs.
+* Supports:
+
+  * Gas level
+  * Temperature
+  * Humidity
+* Each device is identified using a unique `device_uid`.
+* Sensor readings are stored in MySQL for historical analysis.
+
+### 🚨 Alert Management
+
+* Automatically checks incoming sensor readings against configured thresholds.
+* Creates alerts when sensor values exceed configured limits.
+* Supports alert severity levels.
+* Active alerts can be resolved when sensor values return to safe levels.
+* Alerts are associated with the device and sensor reading that triggered them.
+
+### 🎚️ Device Threshold Management
+
+Thresholds can be configured from the dashboard.
+
+Supported thresholds include:
+
+* Gas threshold
+* Temperature threshold
+* Humidity threshold
+* Moderate gas threshold
+* Moderate temperature threshold
+* Moderate humidity threshold
+
+Thresholds can be updated through the web dashboard and API.
+
+### 👤 Authentication & User Management
+
+* Custom user authentication
+* User registration and login
+* Secure password hashing
+* Session-based authentication
+* User roles
+* Admin-only user management
+* Active/inactive user accounts
+* Inactive users are prevented from accessing protected areas
+
+### 🖥️ Dashboard
+
+The dashboard provides an overview of:
+
+* Current gas level
+* Temperature
+* Humidity
+* Connected devices
+* Active and resolved alerts
+* Sensor readings
+* Device thresholds
+
+Dashboard data is retrieved from Laravel API endpoints.
+
+### ⚡ Livewire Integration
+
+The project uses **Laravel Livewire** for interactive server-driven UI components.
+
+Livewire is currently used for features such as:
+
+* User management
+* User search
+* User filtering
+* User activation/deactivation
+* Threshold management
+* Interactive dashboard pages
 
 ---
 
-## 🏗️ System Architecture
+## 🗄️ Database
+
+The application uses **MySQL** as its primary database.
+
+The main entities include:
 
 ```text
-[ ESP32 Sensor Node ] ──(HTTP POST)──> [ Laravel API ] ──> [ SQLite Database ]
-                                              │
-                                     (Broadcast Event)
-                                              │
-                                      [ Laravel Reverb ]
-                                              │
-                                         (WebSockets)
-                                              │
-                                              ▼
-                                   [ Web Browser Dashboard ]
-🚀 Getting Started
-Prerequisites
-PHP >= 8.2
+Users
+  │
+  ├── Authentication
+  ├── Roles
+  └── Active/Inactive Status
 
-Composer
+Devices
+  │
+  ├── Device UID
+  ├── Device Information
+  └── Configurable Thresholds
+       │
+       ▼
+Sensor Readings
+  │
+  ├── Gas Value
+  ├── Temperature
+  ├── Humidity
+  └── Recorded At
+       │
+       ▼
+Alerts
+  ├── Severity
+  ├── Status
+  ├── Triggered At
+  └── Resolved At
+```
 
-Node.js & NPM
+---
 
+## 🔄 Data Flow
+
+### Sensor Data
+
+```text
+ESP32
+  │
+  │ POST /api/sensor-readings
+  ▼
+Laravel API
+  │
+  ├── Validate sensor data
+  │
+  ├── Identify device
+  │
+  ├── Store sensor reading
+  │
+  ├── Compare values with thresholds
+  │
+  └── Create/resolve alert
+          │
+          ▼
+        MySQL
+```
+
+### Dashboard
+
+```text
+Browser
+   │
+   │ API Request
+   ▼
+Laravel API
+   │
+   ▼
 MySQL
+   │
+   ▼
+JSON Response
+   │
+   ▼
+Dashboard
+```
 
-Installation
-Clone the repository:
+---
 
-Bash
-git clone [https://github.com/Gas-Sensor-Project-BitsCS/gas-monitoring-server.git](https://github.com/Gas-Sensor-Project-BitsCS/gas-monitoring-server.git)
+# 🚀 Getting Started
+
+## Prerequisites
+
+Make sure the following are installed:
+
+* PHP >= 8.2
+* Composer
+* Node.js
+* NPM
+* MySQL
+* Git
+
+---
+
+## Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Gas-Sensor-Project-BitsCS/gas-monitoring-server.git
+
 cd gas-monitoring-server
-Install PHP and Node dependencies:
+```
 
-Bash
+### 2. Install PHP dependencies
+
+```bash
 composer install
+```
+
+### 3. Install frontend dependencies
+
+```bash
 npm install
-Set up Environment File:
+```
 
-Bash
+### 4. Configure environment
+
+Copy the example environment file:
+
+```bash
 cp .env.example .env
+```
+
+Generate the application key:
+
+```bash
 php artisan key:generate
-Prepare the Database:
-Ensure configure MySQL in .env, then run migrations:
+```
 
-Bash
-php artisan migrate:fresh
-php atisan db:seed
-Run the Development Services:
-Open 3 terminal windows/tabs to run the stack:
+### 5. Configure MySQL
 
-Laravel App Server: php artisan serve
+Update the database section in `.env`:
 
-<!-- Reverb WebSocket Server: php artisan reverb:start -->
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=gas_monitoring
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-<!-- Vite Frontend Compiler: npm run dev -->
+Make sure the database exists before running migrations.
 
-📡 API Endpoint Reference
-Store Sensor Reading
-HTTP Method: POST
+### 6. Run migrations
 
-URL: /api/sensor-readings
+```bash
+php artisan migrate
+```
 
-Headers:
+To recreate the database and run seeders during development:
 
+```bash
+php artisan migrate:fresh --seed
+```
+
+### 7. Start the Laravel server
+
+```bash
+php artisan serve
+```
+
+### 8. Start Vite
+
+In another terminal:
+
+```bash
+npm run dev
+```
+
+The application will normally be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+# 📡 API
+
+## Store Sensor Reading
+
+### Endpoint
+
+```http
+POST /api/sensor-readings
+```
+
+### Headers
+
+```http
 Content-Type: application/json
-
 Accept: application/json
+```
 
-Request Body Example:
-JSON
+### Request
+
+```json
 {
     "device_uid": "ESP32-001",
     "gas_value": 450.25,
     "temperature": 27.5,
     "humidity": 65.0
 }
-Success Response (201 Created):
-JSON
+```
+
+### Example Response
+
+```json
 {
     "status": "success",
     "message": "Sensor reading stored successfully",
-    "data": {
-        "id": 1,
-        "device_id": 1,
-        "gas_value": 450.25,
-        "temperature": 27.5,
-        "humidity": 65,
-        "recorded_at": "2026-08-21T13:00:00.000000Z"
-    }
 }
+```
 
-set threshold api: PUT /api/devices/{device_id}/thresholds
-json
-{
-    "gas_threshold": 500,
-    "temperature_threshold": 45,
-    "humidity_threshold": 85,
-    "gas_mod_threshold": 300,
-    "temperature_mod_threshold": 35,
-    "humidity_mod_threshold": 65,
-}
-🛠️ Built With
-Backend Framework: Laravel 13
+---
 
-Real-time Server: Laravel Reverb
 
-Database: SQLite / MySQL
+# 🔐 Authentication & Authorization
 
-Frontend: Blade, Tailwind CSS, Google Charts / Chart.js
+The application uses session-based authentication.
+
+### Authentication flow
+
+```text
+Login
+  │
+  ▼
+Validate credentials
+  │
+  ▼
+Check user status
+  │
+  ├── Inactive → Reject login
+  │
+  └── Active
+       │
+       ▼
+    Create session
+       │
+       ▼
+    Dashboard
+```
+
+### User Roles
+
+The application currently supports:
+
+* `admin`
+* `user`
+
+Administrative routes are protected using role middleware.
+
+For example:
+
+```php
+Route::middleware(['auth', 'active', 'role:admin'])
+    ->prefix('admin')
+    ->group(function () {
+        // Admin routes
+    });
+```
+
+---
+
+# 📊 Main Application Pages
+
+| Page            | Description                           | Access              |
+| --------------- | ------------------------------------- | ------------------- |
+| Dashboard       | Monitor sensor and device information | Authenticated users |
+| Thresholds      | View and update device thresholds     | Authenticated users |
+| Devices         | Manage/view connected devices         | Authenticated users |
+| Alerts          | View and manage alerts                | Authenticated users |
+| Users           | Manage users and active status        | Admin               |
+| Admin Dashboard | Administrative dashboard              | Admin               |
+
+---
+
+# 🛠️ Technology Stack
+
+### Backend
+
+* **Laravel 13**
+* **PHP**
+* **MySQL**
+* **REST APIs**
+
+### Frontend
+
+* **Blade**
+* **Livewire**
+* **Tailwind CSS**
+* **JavaScript**
+* **Lucide Icons**
+
+### Hardware
+
+* **ESP32**
+* Gas Sensor
+* Temperature Sensor
+* Humidity Sensor
+* Buzzer
+
+### Development Tools
+
+* Composer
+* NPM
+* Vite
+* Postman
+* Git / GitHub
+
+---
+
+# 🧪 API Testing
+
+The REST APIs can be tested using **Postman** before connecting the ESP32.
+
+Recommended testing flow:
+
+```text
+Postman
+   │
+   ▼
+Laravel API
+   │
+   ├── Validate Request
+   │
+   ├── Store Data
+   │
+   └── Process Alert
+        │
+        ▼
+      MySQL
+```
+
+This allows the API to be verified independently before troubleshooting the ESP32 HTTP client.
+
+---
+
+# 🚧 Current Development Status
+
+The project currently includes:
+
+* ✅ Laravel backend
+* ✅ MySQL database
+* ✅ ESP32 sensor API
+* ✅ Sensor data storage
+* ✅ Threshold management
+* ✅ Alert creation and resolution
+* ✅ Custom authentication
+* ✅ Role-based authorization
+* ✅ Active/inactive user management
+* ✅ User management page
+* ✅ Threshold management page
+* ✅ Livewire integration
+* ✅ API-based dashboard data
+* ✅ Blade-based frontend
+* ✅ Tailwind CSS UI
+
+Real-time WebSocket functionality is **Development**. Dashboard data is currently retrieved through HTTP API endpoints.
+
+---
+
+# 👥 Project
+
+**IoT Gas Monitoring & Alert System**
+
+Developed as a Computer Science project using Laravel, MySQL, ESP32, and sensor hardware.
+
+Repository:
+
+[Gas-Sensor-Project-BitsCS/gas-monitoring-server](https://github.com/Gas-Sensor-Project-BitsCS/gas-monitoring-server?utm_source=chatgpt.com)

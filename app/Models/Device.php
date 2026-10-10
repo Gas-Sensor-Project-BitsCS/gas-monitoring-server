@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Override;
 
 class Device extends Model
 {
+    use SoftDeletes;
     use HasFactory;
 
     // const CREATED_AT = null;
@@ -24,7 +26,6 @@ class Device extends Model
         'temperature_mod_threshold', // temp Threshold value
         'humidity_mod_threshold', // humidity Threshold value
         'is_active',
-        'deleted_at',
         ];
 
     protected function casts(): array
@@ -37,6 +38,29 @@ class Device extends Model
             'temperature_mod_threshold' => 'float', // temp Threshold value
             'humidity_mod_threshold' => 'float',
         ];
+    }
+    protected static function booted(): void
+    {
+        static::creating(function (Device $device) {
+            if (empty($device->uid)) {
+                $device->uid = 'TEMP-' .
+                    \Illuminate\Support\Str::uuid();
+            }
+        });
+
+        static::created(function (Device $device) {
+            if (str_starts_with($device->uid, 'TEMP-')) {
+                $device->forceFill([
+                    'uid' => 'GAS-DEVICE-' .
+                        str_pad(
+                            (string) $device->id,
+                            4,
+                            '0',
+                            STR_PAD_LEFT
+                        ),
+                ])->saveQuietly();
+            }
+        });
     }
 
     public function sensorReadings()

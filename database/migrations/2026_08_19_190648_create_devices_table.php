@@ -16,12 +16,12 @@ return new class extends Migration
             $table->char('uid', 36)->unique(); // UUID or unique identifier
             $table->string('name', 100); // Device Name
             $table->string('location', 100)->nullable(); // Device Loaction
-            $table->decimal('gas_threshold', 8, 2); // gas Threshold 
-            $table->decimal('temperature_threshold', 6, 2); // temp Threshold
-            $table->decimal('humidity_threshold', 6, 2); // humidity Threshold
-            $table->decimal('gas_mod_threshold', 8, 2); // gas Moderate Threshold
-            $table->decimal('temperature_mod_threshold', 6, 2); // temp Moderate Threshold
-            $table->decimal('humidity_mod_threshold', 6, 2); // humidity Moderate Threshold
+            $table->decimal('gas_threshold', 8, 2)->nullable(); // gas Threshold 
+            $table->decimal('temperature_threshold', 6, 2)->nullable(); // temp Threshold
+            $table->decimal('humidity_threshold', 6, 2)->nullable(); // humidity Threshold
+            $table->decimal('gas_mod_threshold', 8, 2)->nullable(); // gas Moderate Threshold
+            $table->decimal('temperature_mod_threshold', 6, 2)->nullable(); // temp Moderate Threshold
+            $table->decimal('humidity_mod_threshold', 6, 2)->nullable(); // humidity Moderate Threshold
             $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();

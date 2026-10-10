@@ -8,6 +8,7 @@ new class extends Component {
     public $role = '';
     public $active = '';
 
+
     public function getUsersProperty()
     {
         return User::query()
@@ -34,11 +35,17 @@ new class extends Component {
             'is_active' => !$user->is_active,
         ]);
     }
+
+    public function deleteUser($userId)
+    {
+        $user = User::findOrFail($userId);
+        $user->delete();
+    }
 };
 ?>
 
-<div class="p-5">
-    <div class=" flex flex-row justify-between  mb-2">
+<div>
+    {{-- <div class=" flex flex-row justify-between  mb-2">
         <div >
             <h1 class=" text-2xl font-semibold">
             Users
@@ -46,18 +53,20 @@ new class extends Component {
         <p>Manage system users and access</p>
         </div>
         <div>
-            <button class=" btn-blue flex flex-row flex-nowrap  rounded p-2.5">
+            <button wire:click="openAddUser"
+            class=" btn-blue flex flex-row flex-nowrap  rounded p-2.5">
                 <i data-lucide="plus" class="h-24px"></i>
                 Add Users
             </button>
         </div>
-    </div>
+    </div> --}}
+
     <div class="card p-5 w-full">
 
-        <div class="users-header flex flex-row flex-nowrap gap-5 justify-between w-full pb-4 pr-40">
+        <div class="users-header flex flex-row flex-nowrap gap-5  w-full pb-4 pr-40">
 
             {{-- Search --}}
-            <div class="flex-5 flex flex-row  items-center gap-2.5 border h-8 rounded">
+            <div class="flex-6 flex flex-row  items-center gap-2.5 border h-8 rounded">
                 <i data-lucide="search" class="h-24px"></i>
                 <input type="text" placeholder="Search users..." wire:model.live.debounce.300ms="search"
                     class="w-full border-0 focus:border-transparent focus:outline-none">
@@ -138,6 +147,11 @@ new class extends Component {
                                     class="m-2 p-1.5 rounded-xl text-blue-600 bg-blue-100 hover:bg-blue-200"
                                 >
                                     {{ $user->is_active ? 'Deactivate' : 'Activate' }}
+                                </button>
+                                <button type="button"
+                                    wire:click="deleteUser({{ $user->id }})"
+                                >
+                                    <i data-lucide="trash" class="text-red-400"></i>
                                 </button>
                             </td>
 

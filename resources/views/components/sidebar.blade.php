@@ -20,7 +20,7 @@
             <span>Dashboard</span>
         </a>
 
-        <a href="#dashboard">
+        <a href="{{ route('devices') }}" wire:navigate wire:current="active">
             <div class="icon-box">
                 <i data-lucide="cpu"></i>
             </div>
