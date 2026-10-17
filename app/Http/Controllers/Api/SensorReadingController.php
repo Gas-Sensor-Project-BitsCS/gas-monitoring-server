@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\SensorReadingReceived;
 use App\Models\SensorData;
 use App\Models\Device;
 use App\Services\AlertService;
@@ -13,21 +14,18 @@ class SensorReadingController extends Controller
     public function __construct(
         private AlertService $alertService
     ) {}
-    
+
     public function store(Request $request)
     {
-        // 1. Validate incoming JSON payload
         $validated = $request->validate([
             'device_uid'  => 'required|string|exists:devices,uid',
             'gas_value'   => 'required|numeric',
-            'temperature' => 'required|nullable',
-            'humidity'    => 'required|nullable',
+            'temperature' => 'required|nullable|numeric',
+            'humidity'    => 'required|nullable|numeric',
         ]);
 
-        // 2. Find the device by its unique UID
-        $device = Device::where('uid', $validated['device_uid'])->first();
+        $device = Device::where('uid', $validated['device_uid'])->firstOrFail();
 
-        // 3. Store the reading in DB
         $reading = SensorData::create([
             'device_id'   => $device->id,
             'gas_value'   => $validated['gas_value'],
@@ -35,19 +33,28 @@ class SensorReadingController extends Controller
             'humidity'    => $validated['humidity'],
             'recorded_at' => now(),
         ]);
-        
-        // Alert generate service
+
+        // Process alerts based on this reading.
         $alert = $this->alertService->process($reading, $device);
 
-        // // 4. Update the device's last_seen_at timestamp
-        // $device->update(['last_seen_at' => now()]);
+        // Update the device's last-seen timestamp.
+        // $device->update([
+        //     'last_seen_at' => now(),
+        // ]);
 
-        // 5. Return success JSON response
+        // Broadcast the new reading through Laravel Reverb.
+        SensorReadingReceived::dispatch([
+            'device_id'   => $device->id,
+            'device_uid'  => $device->uid,
+            'gas_value'   => $reading->gas_value,
+            'temperature' => $reading->temperature,
+            'humidity'    => $reading->humidity,
+            'recorded_at' => $reading->recorded_at->toISOString(),
+        ]);
+
         return response()->json([
             'status'  => 'success',
             'message' => 'Sensor reading stored successfully',
-            // 'data'    => $reading,
-            // 'alert'   => $alert
         ], 201);
     }
 }

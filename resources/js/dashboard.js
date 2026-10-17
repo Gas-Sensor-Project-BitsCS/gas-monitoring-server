@@ -84,25 +84,45 @@ function fetchDevice() {
             document.getElementById('humidity-threshold').textContent = humidityHigh;
         });
 }
-function fetchLatestData() {
-    fetch('/api/sensor-readings/latest')
-        .then(response => response.json())
-        .then(data => {
-            // Check if valid data returned (prevents null crashes when DB is empty)
-            if (!data || data.gas_value === undefined) return;
-            console.log(data);
-            // Convert values to Numbers before calling .toFixed(1)
-            document.getElementById('gas_value').textContent = Number(data.gas_value).toFixed(1);
-            document.getElementById('temperature').textContent = Number(data.temperature).toFixed(1);
-            document.getElementById('humidity').textContent = Number(data.humidity).toFixed(1);
+// function fetchLatestData() {
+//     fetch('/api/sensor-readings/latest')
+//         .then(response => response.json())
+//         .then(data => {
+//             // Check if valid data returned (prevents null crashes when DB is empty)
+//             if (!data || data.gas_value === undefined) return;
+//             console.log(data);
+//             // Convert values to Numbers before calling .toFixed(1)
+//             document.getElementById('gas_value').textContent = Number(data.gas_value).toFixed(1);
+//             document.getElementById('temperature').textContent = Number(data.temperature).toFixed(1);
+//             document.getElementById('humidity').textContent = Number(data.humidity).toFixed(1);
 
 
-            setLevel(gasCard, gasLevel, data.gas_value, gasHigh, gas_moderate, 'gas');
-            setLevel(tempCard, tempLevel, data.temperature, tempHigh, temp_moderate, 'temperature');
-            setLevel(humidityCard, humidityLevel, data.humidity, humidityHigh, humidity_moderate, 'humidity');
-            isOnline(data.recorded_at, 15);
-        });
-}
+//             setLevel(gasCard, gasLevel, data.gas_value, gasHigh, gas_moderate, 'gas');
+//             setLevel(tempCard, tempLevel, data.temperature, tempHigh, temp_moderate, 'temperature');
+//             setLevel(humidityCard, humidityLevel, data.humidity, humidityHigh, humidity_moderate, 'humidity');
+//             isOnline(data.recorded_at, 15);
+//         });
+// }
+
+// Function called directly by Reverb broadcast events
+window.updateDashboardFromReading = function(data) {
+    if (!data || data.gas_value === undefined) return;
+
+    const gasElem = document.getElementById('gas_value');
+    const tempElem = document.getElementById('temperature');
+    const humElem = document.getElementById('humidity');
+
+    if (gasElem) gasElem.textContent = Number(data.gas_value).toFixed(1);
+    if (tempElem) tempElem.textContent = Number(data.temperature).toFixed(1);
+    if (humElem) humElem.textContent = Number(data.humidity).toFixed(1);
+
+    setLevel(gasCard, gasLevel, data.gas_value, gasHigh, gas_moderate);
+    setLevel(tempCard, tempLevel, data.temperature, tempHigh, temp_moderate);
+    setLevel(humidityCard, humidityLevel, data.humidity, humidityHigh, humidity_moderate);
+    
+    isOnline(data.recorded_at || new Date().toISOString(), 15);
+};
+
 function fetchRecentAlerts() {
     fetch('/api/alerts')
         .then(response => response.json())
@@ -156,6 +176,18 @@ function displayAlerts() {
     });
 }
 
+export function fetchLatestData() {
+    fetch('/api/sensor-readings/latest')
+        .then(res => res.json())
+        .then(data => window.updateDashboardFromReading(data));
+}
+
+export function initDashboard() {
+    initializeDashboardElements();
+    fetchDevice();
+    fetchLatestData();
+}
+
 let deviceInterval;
 let readingInterval;
 let alertInterval;
@@ -163,11 +195,11 @@ let alertInterval;
 function startDashboard() {
     initializeDashboardElements();
     fetchDevice();
-    fetchLatestData();
+    // fetchLatestData();
     fetchRecentAlerts();
 
     deviceInterval = setInterval(fetchDevice, 5000);
-    readingInterval = setInterval(fetchLatestData, 2000);
+    // readingInterval = setInterval(fetchLatestData, 2000);
     alertInterval = setInterval(fetchRecentAlerts, 3000);
 }
 

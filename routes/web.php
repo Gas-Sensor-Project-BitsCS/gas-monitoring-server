@@ -17,6 +17,7 @@ Route::middleware('guest')->group(function () {
 
 // Auth Routes (Only logged in users)
 Route::middleware(['auth', 'active'])->group(function () {
+    Route::redirect('/', 'dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::view('/dashboard', 'dashboard')->name('dashboard');
     Route::view('/thresholds', 'pages.thresholds')->name('thresholds');
