@@ -27,7 +27,7 @@
             <span>Devices</span>
         </a>
 
-        <a href="#dashboard">
+        <a href="{{ route('alerts') }}" wire:navigate wire:current="active">
             <div class="icon-box">
                 <i data-lucide="triangle-alert"></i>
             </div>

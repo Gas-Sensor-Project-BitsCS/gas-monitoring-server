@@ -1,3 +1,6 @@
+let selectedDeviceId = 1;
+
+
 let gasHigh = 500
 let tempHigh = 40
 let humidityHigh = 85
@@ -69,21 +72,39 @@ function isOnline(timeStamp, threshold) {
     }
 }
 
-function fetchDevice() {
-    fetch('/api/devices/1')
-        .then(response => response.json())
-        .then(data => {
-            gasHigh = data.device.gas_threshold;
-            gas_moderate = data.device.gas_mod_threshold;
-            tempHigh = data.device.temperature_threshold;
-            temp_moderate = data.device.temperature_mod_threshold
-            humidityHigh = data.device.humidity_threshold;
-            humidity_moderate = data.device.humidity_mod_threshold;
-            document.getElementById('gas-threshold').textContent = gasHigh;
-            document.getElementById('temp-threshold').textContent = tempHigh;
-            document.getElementById('humidity-threshold').textContent = humidityHigh;
-        });
+
+async function fetchDevice() {
+    if (!selectedDeviceId) return;
+
+    const requestedDeviceId = selectedDeviceId;
+
+    try {
+        const response = await fetch(`/api/devices/${requestedDeviceId}`);
+
+        if (!response.ok) throw new Error('Failed to fetch device');
+
+        const data = await response.json();
+
+        if (requestedDeviceId !== selectedDeviceId) return;
+
+        gasHigh = Number(data.device.gas_threshold);
+        gas_moderate = Number(data.device.gas_mod_threshold);
+
+        tempHigh = Number(data.device.temperature_threshold);
+        temp_moderate = Number(data.device.temperature_mod_threshold);
+
+        humidityHigh = Number(data.device.humidity_threshold);
+        humidity_moderate = Number(data.device.humidity_mod_threshold);
+
+        document.getElementById('gas-threshold').textContent = gasHigh;
+        document.getElementById('temp-threshold').textContent = tempHigh;
+        document.getElementById('humidity-threshold').textContent = humidityHigh;
+
+    } catch (error) {
+        console.error('Device fetch error:', error);
+    }
 }
+
 // function fetchLatestData() {
 //     fetch('/api/sensor-readings/latest')
 //         .then(response => response.json())
@@ -107,6 +128,10 @@ function fetchDevice() {
 // Function called directly by Reverb broadcast events
 window.updateDashboardFromReading = function(data) {
     if (!data || data.gas_value === undefined) return;
+
+    if (Number(data.device_id) !== Number(selectedDeviceId)) {
+        return;
+    }
 
     const gasElem = document.getElementById('gas_value');
     const tempElem = document.getElementById('temperature');
@@ -176,16 +201,47 @@ function displayAlerts() {
     });
 }
 
-export function fetchLatestData() {
-    fetch('/api/sensor-readings/latest')
-        .then(res => res.json())
-        .then(data => window.updateDashboardFromReading(data));
+export async function fetchLatestData() {
+    if (!selectedDeviceId) return;
+
+    try {
+        const response = await fetch(
+            `/api/sensor-readings/latest?device_id=${selectedDeviceId}`
+        );
+
+        if (!response.ok) throw new Error('Failed to fetch readings');
+
+        const data = await response.json();
+
+        // Prevent stale responses from updating a newly selected device
+        if (data.device_id && Number(data.device_id) !== Number(selectedDeviceId)) {
+            return;
+        }
+
+        window.updateDashboardFromReading(data);
+
+    } catch (error) {
+        console.error('Sensor reading fetch error:', error);
+    }
 }
 
 export function initDashboard() {
     initializeDashboardElements();
+
+    const selector = document.querySelector('[data-device-selector]');
+
+    selectedDeviceId = Number(selector?.dataset.deviceId) || null;
+
+    if (!selectedDeviceId) {
+        console.warn('No device selected');
+        return;
+    }
+
+    console.log('Selected device:', selectedDeviceId);
+
     fetchDevice();
     fetchLatestData();
+    fetchRecentAlerts();
 }
 
 let deviceInterval;
@@ -210,7 +266,20 @@ function stopDashboard() {
     clearInterval(alertInterval);
 }
 
+window.addEventListener('device-changed', async (event) => {
+    const newDeviceId = Number(event.detail.deviceId);
 
+    if (!newDeviceId || newDeviceId === selectedDeviceId) {
+        return;
+    }
+
+    selectedDeviceId = newDeviceId;
+
+    console.log('Device changed:', selectedDeviceId);
+
+    await fetchDevice();
+    await fetchLatestData();
+});
 
 document.addEventListener('livewire:navigated', () => {
 

@@ -7,11 +7,20 @@ use App\Models\SensorData;
 
 class DashboardController extends Controller
 {
-    public function latestSensorData(){
-        return SensorData::orderBy('id','desc')->first();
+    public function latestSensorData(Request $request)
+    {
+        $validated = $request->validate([
+            'device_id' => ['required', 'integer', 'exists:devices,id'],
+        ]);
+
+        $reading = SensorData::where('device_id', $validated['device_id'])
+            ->latest('recorded_at')
+            ->first();
+
+        return response()->json($reading);
     }
-    public function index(Request $request){
-        $readings = $this->latestSensorData();
-        return view("dashboard",compact("readings"));
-    }
+    // public function index(Request $request){
+    //     // $readings = $this->latestSensorData();
+    //     return view("dashboard",compact("readings"));
+    // }
 }

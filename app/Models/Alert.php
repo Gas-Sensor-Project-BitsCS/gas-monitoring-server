@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Alert extends Model
 {
     const CREATED_AT = 'triggered_at';
-    const UPDATED_AT = null;
+    const UPDATED_AT = 'resolved_at';
     protected $fillable = [
         'id',
         'device_id',

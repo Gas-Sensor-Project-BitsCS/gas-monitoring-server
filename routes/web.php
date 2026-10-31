@@ -22,6 +22,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
     Route::view('/thresholds', 'pages.thresholds')->name('thresholds');
     Route::view('/devices', 'pages.devices')->name('devices');
+    Route::view('/alerts', 'pages.alerts')->name('alerts');
     
 });
 

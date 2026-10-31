@@ -3,6 +3,7 @@
     Dashboard
 @endsection
 @section('content')
+    <livewire:dashboard-sensors/>
     <div class="dashboard" data-page="dashboard">
         <div class="sensor-data">
             <div class="gas-card card shadow-s" id="gas-card">
@@ -109,21 +110,19 @@
 
         </div>
         <div class="info-data">
-            <div class="recent-alerts-card card shadow-s">
-                <div class="card-title">
+            <livewire:sensor-reading-chart
+            :device-id="5"
+        />
+            <div class="alert-card shadow-s flex-col">
+                <div class="card-title mb-3.5">
                     <p>Recent Alerts</p>
                     <p class="card-title-right link">View All</p>
                 </div>
-                <div id="alert-container">
+                <div id="alert-container" >
 
                 </div>
             </div>
-            {{-- <div class="device-info card shadow-s">
-                <div class="card-title">
-                    <p>Device Information</p>
-                    <p class="card-title-right status-online">Online</p>
-                </div>
-            </div> --}}
+            
         </div>
     </div>
 @endsection

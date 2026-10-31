@@ -227,6 +227,18 @@ a:active{
     justify-content: space-between;
 }
 
+.alert-card{
+    background-color: var(--bg-light);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 1em;
+    padding: 20px;
+    line-height: 1.5rem;
+    display: flex;
+    /* flex-direction: row; */
+    flex: 1 1 0;
+    
+}
+
 .card{
     background-color: var(--bg-light);
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
@@ -307,6 +319,18 @@ a:active{
         background-color: rgb(217 253 201);
     }
 }
+.status-active{
+        color: red;
+        padding: 0 20px;
+        border-radius: 20px;
+        background-color: #ffbfbf;
+    }
+.status-resolved{
+        color: green;
+        padding: 0 20px;
+        border-radius: 20px;
+        background-color: rgb(217 253 201);
+    }
 .icon-box {
     margin: 0 20px;
     background: transparent;
