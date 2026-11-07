@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Device;
+use App\Enums\DeviceType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,31 +21,45 @@ class DeviceFactory extends Factory
     public function definition(): array
     {
         // Generate the normal thresholds first
-        $gasThreshold = $this->faker->numberBetween(250, 1000);
-        $tempThreshold = 50;
-        $humidityThreshold = 85;
+        $gasThreshold = $this->faker->numberBetween(300, 950);
+        $tempThreshold = $this->faker->randomElement([45, 50, 55, 60]);
+        $humidityThreshold = $this->faker->randomElement([80, 85, 90]);
+
+        // Pull directly from your DeviceType Enum cases
+        $typeEnum = $this->faker->randomElement(DeviceType::cases());
+        $type = $typeEnum->value; // e.g., 'ESP32', 'ARDU', 'Device'
+        
+        $number = str_pad($this->faker->unique()->numberBetween(1, 999), 3, '0', STR_PAD_LEFT);
 
         return [
-            'uid' => $this->faker->unique()->bothify('ESP32-####'),
+            'type' => $type,
+            'uid' => "{$type}-{$number}",
             'name' => $this->faker->randomElement([
-                'ESP32 Gas Sensor',
-                'Arduino Temp Monitor',
-                'Raspberry Pi Humidity Sensor',
+                "{$type} Primary Methane Monitor",
+                "{$type} Environmental Node",
+                "{$type} Ventilation Air Sensor",
+                "{$type} Combustion Gas Detector",
+                "{$type} Ambient Monitor Unit"
             ]),
             'location' => $this->faker->randomElement([
-                'Kitchen room',
-                'Lab Gas Monitor',
-                'Office Gas Monitor',
+                'Mine Shaft 4 - Level 2',
+                'Underground Main Tunnel East',
+                'Chemical Storage Room B',
+                'Factory Assembly Line 3',
+                'Laboratory Fume Hood 1',
+                'Boiler Room Sector C',
+                'Ventilation Shaft 02'
             ]),
             'gas_threshold' => $gasThreshold,
             'temperature_threshold' => $tempThreshold,
             'humidity_threshold' => $humidityThreshold,
 
-            // Ensure moderate < normal
-            'gas_mod_threshold' => $this->faker->numberBetween(200, $gasThreshold - 20),
-            'temperature_mod_threshold' => $this->faker->numberBetween(30, $tempThreshold - 10),
-            'humidity_mod_threshold' => $this->faker->numberBetween(60, $humidityThreshold - 5),
-            'is_active' => true
+            // Ensure moderate < normal (fixed syntax errors from original snippet)
+            'gas_mod_threshold' => $this->faker->numberBetween(150, $gasThreshold - 50),
+            'temperature_mod_threshold' => $this->faker->numberBetween(25, $tempThreshold - 10),
+            'humidity_mod_threshold' => $this->faker->numberBetween(50, $humidityThreshold - 10),
+            
+            'is_active' => $this->faker->boolean(85) // 85% chance of being active
         ];
     }
 }

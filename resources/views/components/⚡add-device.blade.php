@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use App\Models\Device;
+use App\Enums\DeviceType;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -11,7 +12,7 @@ new class extends Component {
 
     public string $name = '';
     public string $location = '';
-    public string $type = '';
+    public string $type = 'Device';
     public bool $is_active = true;
 
     protected $rules = [
@@ -44,6 +45,7 @@ new class extends Component {
 
         $this->showModal = true;
     }
+
     #[On('close-add-device')]
     public function closeModal()
     {
@@ -51,17 +53,24 @@ new class extends Component {
         $this->resetValidation();
     }
 
-    public function save()
+
+    public function saveDevice()
     {
-        $this->validate();
+        $this->validate([
+            'type' => ['required', new \Illuminate\Validation\Rules\Enum(DeviceType::class)],
+            'name' => 'required|string|max:100',
+            'location' => 'nullable|string|max:100',
+        ]);
 
         Device::create([
+            'type' => $this->type,
             'name' => $this->name,
             'location' => $this->location,
-            // 'type' => $this->type,
             'is_active' => $this->is_active,
         ]);
 
+        // Reset fields or emit success event...
+        session()->flash('message', 'Device added successfully!');
         $this->showModal = false;
 
         $this->reset([
@@ -70,18 +79,22 @@ new class extends Component {
             'type',
         ]);
         $this->is_active = true;
-
-        $this->dispatch('user-created');
+        // 1. Dispatch an event telling the app a device was added
+        $this->dispatch('device-added');
+        
     }
 };
 ?>
 
 <div>
 
-    {{-- Add User Button --}}
+    {{-- Add Device Button --}}
     <button type="button" wire:click="openModal" 
     class="btn-blue flex flex-row flex-nowrap rounded p-2">
-        <i data-lucide="plus" class="h-24px"></i>
+        {{-- <i data-lucide="plus" class="h-24px"></i> --}}
+        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
         Add Device
     </button>
 
@@ -105,7 +118,7 @@ new class extends Component {
                 </div>
 
 
-                <form wire:submit="save">
+                <form wire:submit="saveDevice">
 
                     {{-- Name --}}
                     <div class="form-group">
@@ -127,35 +140,26 @@ new class extends Component {
                             Location
                         </label>
 
-                        <input type="text" id="location" wire:model="location" placeholder="Enter email">
+                        <input type="text" id="location" wire:model="location" placeholder="location">
 
                         @error('location')
                             <span class="error">{{ $message }}</span>
                         @enderror
                     </div>
 
-
-                    {{-- Password --}}
-                    {{-- <div class="form-group">
-                        <label for="password">
-                            Password
-                        </label>
-
-                        <input type="password" id="password" wire:model="password" placeholder="Minimum 8 characters">
-
-                        @error('password')
-                            <span class="error">{{ $message }}</span>
-                        @enderror
-                    </div> --}}
-
-
                     {{-- Type --}}
                     <div class="form-group">
                         <label for="type">
                             Type
                         </label>
-
-                        <select id="role" wire:model="role">
+                        <select id="type" wire:model="type" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                            @foreach(App\Enums\DeviceType::cases() as $type)
+                                <option value="{{ $type->value }}">
+                                    {{ $type->name }} ({{ $type->value }})
+                                </option>
+                            @endforeach
+                        </select>
+                        {{-- <select id="type" wire:model="role">                                
                             <option value="ESP">
                                 ESP
                             </option>
@@ -166,7 +170,7 @@ new class extends Component {
                             <option value="Raspberry">
                                 Raspberry
                             </option>
-                        </select>
+                        </select> --}}
 
                         @error('type')
                             <span class="error">{{ $message }}</span>

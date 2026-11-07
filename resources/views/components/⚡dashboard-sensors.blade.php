@@ -1,12 +1,10 @@
-
 <?php
 
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use App\Models\Device;
 
-new class extends Component
-{
+new class extends Component {
     public $selectedDeviceId = null;
 
     public function mount(): void
@@ -28,15 +26,14 @@ new class extends Component
 
     public function updatedSelectedDeviceId($value): void
     {
-        $this->dispatch(
-            'device-changed',
-            deviceId: (int) $value
-        );
+        // Dispatch to other Livewire components/listeners
+        $this->dispatch('device-changed', deviceId: (int) $value);
     }
 };
 ?>
 
 <div class="p-5">
+
     <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold">
             Sensor Monitoring
@@ -47,25 +44,30 @@ new class extends Component
                 Select Device
             </label>
 
-            <select
-                id="device-selector"
-                wire:model.live="selectedDeviceId"
-                class="border rounded-lg p-2"
-                @disabled($this->devices->isEmpty())
-            >
+            {{-- <select id="device-selector" wire:model.live="selectedDeviceId"
+                x-on:change="$dispatch('device-changed', { deviceId: $el.value })" class="border rounded-lg p-2"
+                @disabled($this->devices->isEmpty()) class="border rounded-lg p-2">
                 @foreach($this->devices as $device)
                     <option value="{{ $device->id }}">
-                        ESP32-{{ $device->id }}  {{  $device->name  }}
+                        {{ $device->uid }} {{  $device->name  }}
+                    </option>
+                @endforeach
+            </select> --}}
+            <select id="device-selector" 
+                wire:model.live="selectedDeviceId"
+                @disabled($this->devices->isEmpty()) 
+                class="border rounded-lg p-2">
+                @foreach($this->devices as $device)
+                    <option value="{{ $device->id }}">
+                        {{ $device->uid }} {{ $device->name }}
                     </option>
                 @endforeach
             </select>
         </div>
     </div>
 
-    <div
-        data-device-selector
-        data-device-id="{{ $selectedDeviceId }}"
-    >
+    <div data-device-selector data-device-id="{{ $selectedDeviceId }}">
         {{-- Graph components will go here --}}
     </div>
+
 </div>
