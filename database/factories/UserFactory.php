@@ -28,7 +28,8 @@ class UserFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'password' => Hash::make($this->password), // 👈 always hash passwords
-            'role' => $this->faker->randomElement(['user', 'admin']),
+            // 'role' => $this->faker->randomElement(['user', 'admin']),
+            'role' => 'user',
             'is_active' => $this->faker->boolean(90), // 90% chance active
             'remember_token' => Str::random(10),
         ];

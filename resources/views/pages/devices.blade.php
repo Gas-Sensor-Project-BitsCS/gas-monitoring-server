@@ -13,7 +13,7 @@
             </div>
             <div>
                 {{-- Add User component --}}
-                {{-- <livewire:add-device /> --}}
+                <livewire:add-device />
             </div>
         </div>
 

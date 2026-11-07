@@ -248,6 +248,13 @@ php artisan migrate:fresh --seed
 ```bash
 php artisan serve
 ```
+### 8. Start WebSocket
+
+In another terminal:
+
+```bash
+php artisan reverb:start
+```
 
 ### 8. Start Vite
 

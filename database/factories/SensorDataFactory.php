@@ -21,11 +21,15 @@ class SensorDataFactory extends Factory
     public function definition(): array
     {
         return [
-            'device_id'   => Device::inRandomOrder()->first()->id, 
-            'gas_value'   => $this->faker->randomFloat(2, 10, 50), // PPM range
-            'temperature' => $this->faker->randomFloat(2, 15, 45),  // Celsius
-            'humidity'    => $this->faker->randomFloat(2, 30, 90),  // Percentage
+            // Safely grab an existing device ID, or create a new one if none exist yet
+            'device_id'   => Device::inRandomOrder()->value('id') ?? Device::factory(), 
+            
+            'gas_value'   => $this->faker->randomFloat(2, 50.0, 850.0), // PPM range for gas detection
+            'temperature' => $this->faker->randomFloat(2, 20.0, 55.0),  // Celsius
+            'humidity'    => $this->faker->randomFloat(2, 30.0, 95.0),  // Percentage
+            
             // 'status'      => $this->faker->randomElement(['normal', 'warning', 'critical']),
+            
             'recorded_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
         ];
     }

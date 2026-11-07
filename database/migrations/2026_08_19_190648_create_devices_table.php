@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('devices', function (Blueprint $table) {
             $table->bigIncrements('id'); // Primary key
-            $table->char('uid', 36)->unique(); // UUID or unique identifier
+            $table->string('type', 50); // e.g., 'ESP32', 'Arduino', 'Device'
+            $table->string('uid', 50)->unique(); // Human-readable UID e.g., 'ESP32-1'
             $table->string('name', 100); // Device Name
             $table->string('location', 100)->nullable(); // Device Loaction
             $table->decimal('gas_threshold', 8, 2)->nullable(); // gas Threshold 
@@ -26,15 +27,10 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            // Indexes
-            //$table->index('last_seen_at');
-            // $table->index('name');
-
-            //$table->timestamps(); // created_at & updated_at
         });
         
     }
-
+    
     /**
      * Reverse the migrations.
      */

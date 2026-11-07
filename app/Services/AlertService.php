@@ -11,6 +11,9 @@ class AlertService
     
     public function process(SensorData $reading, Device $device) : ?Alert
     {
+        if(!$device->gas_threshold){
+            return null;
+        }
         // Gas is above threshold
         if($reading->gas_value >= $device->gas_threshold){
             return $this->createOrUpdateAlert($reading, $device);

@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 new class extends Component {
     public $search = '';
@@ -25,7 +26,7 @@ new class extends Component {
                 $query->where('is_active', $this->active);
             })
             ->latest()
-            ->get();
+            ->paginate(14);
     }
     public function toggleActive($userId)
     {
@@ -45,21 +46,6 @@ new class extends Component {
 ?>
 
 <div>
-    {{-- <div class=" flex flex-row justify-between  mb-2">
-        <div >
-            <h1 class=" text-2xl font-semibold">
-            Users
-        </h1>
-        <p>Manage system users and access</p>
-        </div>
-        <div>
-            <button wire:click="openAddUser"
-            class=" btn-blue flex flex-row flex-nowrap  rounded p-2.5">
-                <i data-lucide="plus" class="h-24px"></i>
-                Add Users
-            </button>
-        </div>
-    </div> --}}
 
     <div class="card p-5 w-full">
 
@@ -95,7 +81,7 @@ new class extends Component {
 
         {{-- Users table --}}
 
-        <div class="users-table w-full">
+        <div class="users-table w-full" wire:key="users-table-container"> 
 
             <table class="w-full text-left border border-gray-200 p-1.5">
 
@@ -170,6 +156,9 @@ new class extends Component {
                 </tbody>
 
             </table>
+            <div class="mt-4 pt-2 wire:key="users-pagination"">
+                {{ $this->users->links() }}
+            </div>
 
         </div>
 

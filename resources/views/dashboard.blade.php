@@ -79,9 +79,9 @@
                         <h1 class="status-text" id="device-status">Offline</h1>
                     </div>
                     <div class="info-last-div">
-                        <p>ESP32-Device 01</p>
+                        <p id="name">No device Found</p>
                         {{-- <p class="text-s">Uptime: <span id="uptime">2h 45m</span></p> --}}
-                        <p class="text-s">Location: <span id="uptime">Lab - room 101</span></p>
+                        <p class="text-s">Location: <span id="location">Null</span></p>
                     </div>
                 </div>
                 <div class="card-icon">
@@ -110,9 +110,13 @@
 
         </div>
         <div class="info-data">
-            <livewire:sensor-reading-chart
-            :device-id="5"
-        />
+            {{-- <livewire:sensor-reading-chart
+            :device-id="1"/> --}}
+            <livewire:sensor-reading-chart 
+                :device-id="$selectedDeviceId ?? 1" 
+                wire:key="chart-{{ $selectedDeviceId ?? 1 }}"
+            />
+        
             <div class="alert-card shadow-s flex-col">
                 <div class="card-title mb-3.5">
                     <p>Recent Alerts</p>

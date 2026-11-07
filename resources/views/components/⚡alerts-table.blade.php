@@ -113,7 +113,7 @@ new class extends Component {
                             </td> --}}
 
                             <td>
-                                {{ $alert->resolved_at != null ? $alert->resolved_at->format('d M Y, h:') : 'null'}}
+                                {{ $alert->resolved_at != null ? $alert->resolved_at->format('d M Y, h:i A') : 'null'}}
                             </td>
                             {{-- <td>
                                 <button

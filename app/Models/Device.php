@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\DeviceType;
 use Override;
 
 class Device extends Model
@@ -18,6 +19,7 @@ class Device extends Model
         'id', 
         'uid',
         'name',
+        'type',
         'location',
         'gas_threshold',
         'temperature_threshold',
@@ -27,7 +29,10 @@ class Device extends Model
         'humidity_mod_threshold', // humidity Threshold value
         'is_active',
         ];
-
+    protected $casts = [
+        'type' => DeviceType::class,
+        'is_active' => 'boolean',
+    ];
     protected function casts(): array
     {
         return [
@@ -39,26 +44,33 @@ class Device extends Model
             'humidity_mod_threshold' => 'float',
         ];
     }
-    protected static function booted(): void
+    
+    protected static function booted()
     {
-        static::creating(function (Device $device) {
-            if (empty($device->uid)) {
-                $device->uid = 'TEMP-' .
-                    \Illuminate\Support\Str::uuid();
-            }
-        });
+        // static::creating(function ($device) {
+        //     // Once the record is created, we have the auto-incremented $device->id
+        //     if (empty($device->uid)) {
 
-        static::created(function (Device $device) {
-            if (str_starts_with($device->uid, 'TEMP-')) {
-                $device->forceFill([
-                    'uid' => 'GAS-DEVICE-' .
-                        str_pad(
-                            (string) $device->id,
-                            4,
-                            '0',
-                            STR_PAD_LEFT
-                        ),
-                ])->saveQuietly();
+        //         // Get the string value from the enum instance (defaults to 'Device')
+        //         $type = $device->type?->value ?? 'Device';
+        //         // Pad the ID with leading zeros to 3 digits (e.g., 1 -> 001)
+        //         $paddedId = str_pad($device->id, 3, '0', STR_PAD_LEFT);
+
+        //         $device->update([
+        //             'uid' => "{$type}-{$paddedId}"
+        //         ]);
+        //     }
+        // });
+        static::creating(function ($device) {
+            if (empty($device->uid)) {
+                $type = $device->type?->value ?? $device->type ?? 'Device';
+                
+                // To get the next auto-incrementing ID safely before save, 
+                // or use a temporary unique string/hash if ID isn't incremented yet:
+                $latestId = static::max('id') + 1;
+                $paddedId = str_pad($latestId, 3, '0', STR_PAD_LEFT);
+                
+                $device->uid = "{$type}-{$paddedId}";
             }
         });
     }

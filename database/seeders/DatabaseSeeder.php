@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(10)->create();
+        
 
         User::factory()->create([
             'name' => 'Test User',
@@ -27,12 +27,14 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
+        User::factory(30)->create();
 
          // Ensure devices exist
         Device::firstOrCreate([
             'uid' => 'ESP32-001',
-            'name' => 'ESP32 Gas Sensor',
-            'location' => 'Kitchen Gas Monitor',
+            'name' => 'ESP32 Gas Sensor primary',
+            'type' => 'ESP32',
+            'location' => 'Workshop Gas Monitor',
             'gas_threshold' => 500,
             'temperature_threshold' => 40,
             'humidity_threshold' => 85,
@@ -45,6 +47,7 @@ class DatabaseSeeder extends Seeder
         Device::firstOrCreate([
             'uid' => 'ESP32-002',
             'name' => 'ESP32 Gas Sensor',
+            'type' => 'ESP32',
             'location' => 'Lab Gas Monitor',
             'gas_threshold' => 500,
             'temperature_threshold' => 40,
@@ -54,10 +57,10 @@ class DatabaseSeeder extends Seeder
             "humidity_mod_threshold"=> 65,
             "is_active" => true,
         ]);
-        Device::factory()->count(10)->create();
+        // Device::factory()->count(100)->create();
 
-        // Seed sensor data linked to devices
-        SensorData::factory()->count(50)->create();
+        // // Seed sensor data linked to devices
+        // SensorData::factory()->count(500)->create();
 
     }
 }

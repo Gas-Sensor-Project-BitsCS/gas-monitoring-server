@@ -2,8 +2,12 @@
 
 use App\Models\Device;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use Livewire\WithPagination;
 
 new class extends Component {
+    use WithPagination;
+
     public $search = '';
     public $location = '';
     public $active = '';
@@ -26,7 +30,7 @@ new class extends Component {
                 $query->where('is_active', $this->active);
             })
             ->latest()
-            ->get();
+            ->paginate(15);
     }
     public function toggleActive($deviceId)
     {
@@ -41,6 +45,15 @@ new class extends Component {
     {
         $device = Device::findOrFail($deviceId);
         $device->delete();
+    }
+
+    // Listen for the event dispatched when a device is added
+    #[On('device-added')] 
+    public function refreshDeviceList()
+    {
+        // Livewire automatically re-renders the component when public methods run,
+        // so refreshing or resetting pagination brings the newly added device into view immediately.
+        $this->resetPage();
     }
 };
 ?>
@@ -73,14 +86,6 @@ new class extends Component {
                     class="w-full border-0 focus:border-transparent focus:outline-none">
             </div>
 
-            {{-- Role --}}
-            <div class="flex-1">
-                <select wire:model.live="location" class="h-8 border rounded">
-                    <option value="">Latest</option>
-                    <option value="admin">Admin</option>
-                    <option value="user">User</option>
-                </select>
-            </div>
 
             {{-- Active --}}
             <div class="flex-1">
@@ -171,6 +176,10 @@ new class extends Component {
                 </tbody>
 
             </table>
+            {{-- 4. Pagination Arrow Links Container --}}
+            <div class="mt-4 pt-2 wire:key="device-pagination"">
+                {{ $this->devices->links() }}
+            </div>
 
         </div>
 
